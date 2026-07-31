@@ -1,0 +1,32 @@
+name: Profile Summary Cards
+
+on:
+  # main に push されたとき（生成物フォルダだけの変更は無視してループを防ぐ）
+  push:
+    branches: [main]
+    paths-ignore:
+      - "profile-summary-card-output/**"
+  # 12 時間ごと
+  schedule:
+    - cron: "0 */12 * * *"
+  # 手動実行
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: generate-profile-summary-cards
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: vn7n24fzkq/github-profile-summary-cards@release
+        env:
+          GITHUB_TOKEN: ${{ secrets.SUMMARY_GITHUB_TOKEN }}
+        with:
+          USERNAME: cilly-yllic
+          BRANCH_NAME: "main"
+          UTC_OFFSET: 9 # JST
+          AUTO_PUSH: true
